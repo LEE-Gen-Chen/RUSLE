@@ -4,7 +4,7 @@ import ee
 ee.Initialize(project='YOUR_PROJECT_ID')
 
 # 研究区：广东省市级边界
-study_area = ee.FeatureCollection("projects/YOUR_PROJECT_ID/assets/GD_City")
+study_area = ee.FeatureCollection("projects/YOUR_PROJECT_ID/assets/YOUR_ASSET_NAME")
 
 # 土壤数据集
 soil_datasets = {
@@ -25,7 +25,7 @@ for key, img in soil_datasets.items():
         fileNamePrefix=f"GD_{key}",
         region=study_area.geometry(),
         scale=250,               # 默认分辨率
-        crs="EPSG:4490",         # 中国大地2000
+        crs="YOUR_CRS_EPSG",         # 中国大地2000
         fileFormat="GeoTIFF",
         maxPixels=1e13           # 允许大图导出
     )

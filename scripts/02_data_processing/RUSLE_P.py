@@ -29,7 +29,10 @@ def load_mask_shapefile(shapefile_path):
         return None
 
 
-def generate_p_factor_raster(input_folder, output_folder, mask_shapefile, year_range=(1990, 2025)):
+YEAR_START = 1990
+YEAR_END = 2024
+
+def generate_p_factor_raster(input_folder, output_folder, mask_shapefile, year_range=(YEAR_START, YEAR_END + 1)):
     """
     根据CLCD土地分类数据生成P因子栅格数据，严格限制在矢量范围内
 
@@ -211,7 +214,7 @@ def create_seaborn_visualizations(stats_data, output_folder):
     # 1. 绘制加权平均P值变化趋势
     plt.figure(figsize=(12, 6))
     sns.lineplot(data=df, x='年份', y='加权平均P值', marker='o', linewidth=2.5)
-    plt.title('广东省加权平均P因子值变化趋势 (1990-2024)', fontsize=14, fontweight='bold')
+    plt.title('P Factor Trend (1990-2024)', fontsize=14, fontweight='bold')
     plt.ylabel('加权平均P值')
     plt.grid(True, alpha=0.3)
     plt.tight_layout()
@@ -237,7 +240,7 @@ def create_seaborn_visualizations(stats_data, output_folder):
         plt.figure(figsize=(14, 8))
         sns.lineplot(data=area_df, x='年份', y='面积比例', hue='土地类型',
                      marker='o', linewidth=2, markersize=4)
-        plt.title('广东省各类土地利用类型面积比例变化 (1990-2024)', fontsize=14, fontweight='bold')
+        plt.title('Land Use Area Ratio Trend (1990-2024)', fontsize=14, fontweight='bold')
         plt.ylabel('面积比例 (%)')
         plt.legend(bbox_to_anchor=(1.05, 1), loc='upper left', title='土地类型')
         plt.tight_layout()
@@ -270,7 +273,7 @@ def create_seaborn_visualizations(stats_data, output_folder):
         plt.figure(figsize=(16, 8))
         sns.heatmap(pivot_df, annot=False, cmap='YlOrRd', linewidths=0.5,
                     cbar_kws={'label': '面积加权P值贡献'})
-        plt.title('广东省各土地类型对P值的贡献热力图 (1990-2024)', fontsize=14, fontweight='bold')
+        plt.title('P Value Contribution Heatmap (1990-2024)', fontsize=14, fontweight='bold')
         plt.tight_layout()
         plt.savefig(os.path.join(vis_folder, 'P值贡献热力图.png'), dpi=300, bbox_inches='tight')
         plt.close()
@@ -287,9 +290,9 @@ def batch_process_clcd_data():
     """批量处理CLCD数据的主函数"""
 
     # 设置路径
-    input_folder = r"./data\CLCD\project"
-    output_folder = r"./data\CLCD\P_factor"
-    mask_shapefile = r"./data\Geoscene\GD.shp"  # 矢量掩膜文件
+    input_folder = r"./data/landcover"
+    output_folder = r"./data/P_output"
+    mask_shapefile = r"./data/boundary.shp"  # 矢量掩膜文件
 
     # 检查输入文件夹是否存在
     if not os.path.exists(input_folder):

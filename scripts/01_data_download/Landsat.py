@@ -14,7 +14,7 @@ sys.stdout.reconfigure(encoding='utf-8')
 ee.Initialize(project='YOUR_PROJECT_ID')
 
 # 广东省边界与市级行政区（假设你的资产包含每个市的 Feature）
-study_area_fc = ee.FeatureCollection("projects/YOUR_PROJECT_ID/assets/GD_City")
+study_area_fc = ee.FeatureCollection("projects/YOUR_PROJECT_ID/assets/YOUR_ASSET_NAME")
 city_list = study_area_fc.aggregate_array("City").getInfo()
 
 print("城市字段示例：", city_list[:10])
@@ -93,7 +93,7 @@ def download_best_landsat(year, month, city_name):
         url = best_img.getDownloadURL({
             "region": region,
             "scale": scale,
-            "crs": "EPSG:4490",
+            "crs": "YOUR_CRS_EPSG",
             "format": "GEO_TIFF"
         })
 
@@ -128,7 +128,7 @@ def mosaic_month(year, month):
             "height": mosaic.shape[1],
             "width": mosaic.shape[2],
             "transform": out_trans,
-            "crs": "EPSG:4490"
+            "crs": "YOUR_CRS_EPSG"
         })
         out_file = os.path.join(output_root, f"GD_Landsat_{year}_{month:02d}.tif")
         with rasterio.open(out_file, "w", **out_meta) as dest:

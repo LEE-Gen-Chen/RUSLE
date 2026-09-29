@@ -5,6 +5,14 @@ import requests
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
 
+# ==================== 配置参数 ====================
+YEAR_START = 1990   # 起始年份
+YEAR_END   = 2024   # 结束年份
+CRS        = "EPSG:4326"  # 输出坐标系
+SCALE      = 500    # 下载分辨率（米）
+OUTPUT_DIR = r"./data"
+
+
 # 初始化 Earth Engine
 ee.Authenticate()
 ee.Initialize(project='YOUR_PROJECT_ID')
@@ -14,7 +22,7 @@ out_dir = r"./data\GEE\data"
 os.makedirs(out_dir, exist_ok=True)
 
 # 定义区域和输出范围
-region = ee.FeatureCollection("projects/YOUR_PROJECT_ID/assets/GD_Area")
+region = ee.FeatureCollection("projects/YOUR_PROJECT_ID/assets/YOUR_ASSET_NAME")
 region_geom = region.geometry()
 region_geojson = region_geom.getInfo()
 
@@ -61,8 +69,8 @@ for year in range(2000, 2021):
         # 获取 GEE 下载链接
         try:
             url = img.getDownloadURL({
-                'scale': 500,
-                'crs': 'EPSG:4326',
+                'scale': SCALE,
+                'crs': CRS,
                 'region': region_geojson,
                 'fileFormat': 'GeoTIFF'
             })

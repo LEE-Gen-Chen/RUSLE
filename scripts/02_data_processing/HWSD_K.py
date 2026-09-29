@@ -84,17 +84,17 @@ def read_hwsd_mdb_alternative(mdb_path):
 
 def calculate_k_factor(hwsd_raster_path, hwsd_mdb_path, output_path):
     """
-    使用已经投影和裁剪的广东省HWSD栅格数据计算土壤可蚀性因子K值
+    使用已经投影和裁剪的Study Area HWSD栅格数据计算土壤可蚀性因子K值
 
     参数:
-    hwsd_raster_path: 已经投影和裁剪的广东省HWSD栅格数据路径
+    hwsd_raster_path: 已经投影和裁剪的Study Area HWSD栅格数据路径
     hwsd_mdb_path: HWSD MDB文件路径
     output_path: 输出K值栅格路径
     """
 
-    print("正在读取广东省HWSD栅格数据...")
+    print("正在读取Study Area HWSD栅格数据...")
 
-    # 读取已经投影和裁剪的广东省HWSD栅格数据
+    # 读取已经投影和裁剪的Study Area HWSD栅格数据
     with rasterio.open(hwsd_raster_path) as src:
         hwsd_data = src.read(1)
         src_profile = src.profile
@@ -102,7 +102,7 @@ def calculate_k_factor(hwsd_raster_path, hwsd_mdb_path, output_path):
         src_transform = src.transform
         src_bounds = src.bounds
 
-        print(f"广东省HWSD数据信息: CRS={src_crs}, 分辨率={src.res}, 尺寸={src.width}x{src.height}")
+        print(f"Study Area HWSD数据信息: CRS={src_crs}, 分辨率={src.res}, 尺寸={src.width}x{src.height}")
 
     # 从MDB文件读取属性数据
     attributes = read_hwsd_mdb(hwsd_mdb_path)
@@ -226,11 +226,11 @@ def main():
     """主函数"""
 
     # 输入文件路径
-    hwsd_raster_path = r"./data\soil\HWSD_RASTER\hwsd_region.tif"  # 已经投影和裁剪的广东省HWSD数据
-    hwsd_mdb_path = r"./data\soil\HWSD.mdb"
+    hwsd_raster_path = r"./data/soil/hwsd_raster.tif"  # 已经投影和裁剪的Study Area HWSD数据
+    hwsd_mdb_path = r"./data/soil/HWSD.mdb"
 
     # 输出文件路径
-    output_path = r"./data\soil\HWSD_RASTER\RUSLE_K.tif"
+    output_path = r"./data/soil/K_factor.tif"
 
     # 确保输出目录存在
     os.makedirs(os.path.dirname(output_path), exist_ok=True)

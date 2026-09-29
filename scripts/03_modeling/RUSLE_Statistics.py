@@ -49,7 +49,7 @@ vector_path = r"./data\Geoscene\GD.shp"
 
 # CGCS2000 3-degree Gauss-Kruger CM 114E (EPSG:4547)
 # 若失效，可尝试 EPSG:4491 (CGCS2000 GK Zone 38) 或删除.prj文件让GDAL自动识别
-CGCS2000_CRS = 'EPSG:4547'
+CGCS2000_CRS = 'YOUR_CRS_EPSG'
 
 bins = np.array([0, 500, 2500, 5000, 8000, 15000, np.inf], dtype=np.float32)
 

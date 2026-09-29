@@ -5,7 +5,7 @@ import os
 ee.Initialize()
 
 # 2. 加载研究区 FeatureCollection，并提取其几何范围
-region_fc = ee.FeatureCollection("projects/YOUR_PROJECT_ID/assets/GD_Area")
+region_fc = ee.FeatureCollection("projects/YOUR_PROJECT_ID/assets/YOUR_ASSET_NAME")
 region = region_fc.geometry()
 
 # 3. 导出参数配置

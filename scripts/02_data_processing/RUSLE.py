@@ -12,8 +12,16 @@ from tqdm import tqdm
 warnings.filterwarnings('ignore')
 
 
+
+# ==================== 配置参数 ====================
+YEAR_START = 1990   # 起始年份
+YEAR_END   = 2024   # 结束年份
+BASE_PATH  = "./data"
+CRS_EPSG   = "YOUR_CRS_EPSG"  # 目标坐标系EPSG编码
+RESOLUTION = 30      # 目标分辨率（米）
+
 class RUSLECalculator:
-    def __init__(self, target_resolution=30, target_crs="EPSG:4547", resolution_tolerance=0.005):
+    def __init__(self, target_resolution=30, target_crs="YOUR_CRS_EPSG", resolution_tolerance=0.005):
         self.target_resolution = target_resolution
         self.target_crs = target_crs
         self.boundary = None
@@ -419,21 +427,21 @@ class RUSLECalculator:
 
 def main():
     # 初始化计算器，设置分辨率容差为0.005（0.5%）
-    calculator = RUSLECalculator(target_resolution=30, target_crs="EPSG:4547", resolution_tolerance=0.005)
+    calculator = RUSLECalculator(target_resolution=RESOLUTION, target_crs=CRS_EPSG, resolution_tolerance=0.005)
 
     # 文件路径配置
     base_path = r"./data"
-    boundary_path = os.path.join(base_path, "./data", "GD.shp")
+    boundary_path = os.path.join(BASE_PATH, "boundary.shp")
 
     # 因子路径模板
-    R_template = os.path.join(base_path, "Precipitation", "R_output", "R_{year}.tif")
-    C_template = os.path.join(base_path, "NDVI", "C_value_30m", "C_NDVI_{year}.tif")
-    K_path = os.path.join(base_path, "soil", "HWSD_Resample", "RUSLE_K_30m.tif")
-    LS_path = os.path.join(base_path, "./data", "LS_Factor.tif")
-    P_template = os.path.join(base_path, "CLCD", "P_factor", "P{year}.tif")
+    R_template = os.path.join(BASE_PATH, "R_output", "R_{year}.tif")
+    C_template = os.path.join(BASE_PATH, "C_output", "C_{year}.tif")
+    K_path = os.path.join(BASE_PATH, "K_factor.tif")
+    LS_path = os.path.join(BASE_PATH, "LS_factor.tif")
+    P_template = os.path.join(BASE_PATH, "P_output", "P_{year}.tif")
 
     # 输出目录
-    output_dir = os.path.join(base_path, "RUSLE_Results")
+    output_dir = os.path.join(BASE_PATH, "RUSLE_results")
     os.makedirs(output_dir, exist_ok=True)
 
     # 1. 加载广东省边界
@@ -454,7 +462,7 @@ def main():
     print("开始逐年计算RUSLE...")
 
     # 创建年份列表
-    years = list(range(1990, 2025))
+    years = list(range(YEAR_START, YEAR_END + 1))
 
     # 使用tqdm显示进度条
     progress_bar = tqdm(years, desc="处理年份", unit="年")

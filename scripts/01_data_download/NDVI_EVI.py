@@ -11,11 +11,11 @@ ee.Initialize(project='YOUR_PROJECT_ID')
 # ============================================
 # 参数设置
 # ============================================
-roi = ee.FeatureCollection('projects/YOUR_PROJECT_ID/assets/GD_City')
+roi = ee.FeatureCollection('projects/YOUR_PROJECT_ID/assets/YOUR_ASSET_NAME')
 roi_geometry = roi.geometry()
 drive_folder = 'GEE_NDVI_EVI'
 scale = 30
-crs = 'EPSG:4490'
+crs = 'YOUR_CRS_EPSG'
 MAX_CONCURRENT_TASKS = 50  # 最大并发任务数，可根据需要调整（建议 < 100）
 
 

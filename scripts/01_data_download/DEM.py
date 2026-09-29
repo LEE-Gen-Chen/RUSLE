@@ -6,7 +6,7 @@ import os
 ee.Initialize(project='YOUR_PROJECT_ID')
 
 # 研究区（广东省边界）
-study_area = ee.FeatureCollection("projects/YOUR_PROJECT_ID/assets/GD_City")
+study_area = ee.FeatureCollection("projects/YOUR_PROJECT_ID/assets/YOUR_ASSET_NAME")
 
 # 加载 SRTM DEM 数据
 dem = ee.Image("USGS/SRTMGL1_003").clip(study_area)
@@ -18,7 +18,7 @@ task_config = {
     'scale': 30,                # 分辨率 30m
     'region': study_area.geometry(),
     'fileFormat': 'GeoTIFF',
-    'crs': 'EPSG:4490',         # 可改为 EPSG:4490 (CGCS2000)
+    'crs': 'YOUR_CRS_EPSG',         # 可改为 EPSG:4490 (CGCS2000)
     'folder': 'GEE_DEM',         # 导出到 Google Drive 的文件夹
     'maxPixels': 2e9
 }

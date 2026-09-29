@@ -7,7 +7,7 @@ ee.Authenticate()
 ee.Initialize(project='YOUR_PROJECT_ID')
 
 # 2. 区域
-region = ee.FeatureCollection("projects/YOUR_PROJECT_ID/assets/GD_Area").geometry()
+region = ee.FeatureCollection("projects/YOUR_PROJECT_ID/assets/YOUR_ASSET_NAME").geometry()
 
 # 3. 碳池影像模板
 above_template = "NASA/ORNL/biomass_carbon_density/v1/{year}"

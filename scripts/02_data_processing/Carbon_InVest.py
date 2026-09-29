@@ -11,7 +11,7 @@ out_dir = r"./data\GEE\Carbon_InVset"
 os.makedirs(out_dir, exist_ok=True)
 
 # 研究区
-region = ee.FeatureCollection("projects/YOUR_PROJECT_ID/assets/GD_Area")
+region = ee.FeatureCollection("projects/YOUR_PROJECT_ID/assets/YOUR_ASSET_NAME")
 region_geojson = region.geometry().getInfo()
 
 # 重试策略

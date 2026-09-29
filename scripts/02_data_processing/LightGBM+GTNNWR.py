@@ -14,8 +14,27 @@ from sklearn.neighbors import NearestNeighbors
 import random
 from sklearn.utils import shuffle
 
-# ==================== 配置参数（可调） ====================
-GRID_SIZE_NEW = 1500
+# ==================== 配置参数 ====================
+YEAR_START = 1990
+YEAR_END   = 2024
+GRID_SIZE  = 1500   # 网格分辨率（米）
+OUTPUT_DIR = r"./data/model_output"
+NPZ_PATH   = r"./data/training_data.npz"
+
+# ==================== 训练参数（可调） ====================
+USE_LOG_TRANSFORM  = True
+REMOVE_OUTLIERS    = True
+OUTLIER_PERCENTILE = 99.5
+SEED               = 42
+USE_NEIGHBOR_FEATURES = True
+K_NEIGHBORS       = 8
+SPATIAL_SPLIT     = True
+ADD_LAG_FEATURES  = True
+LAG_YEARS         = 1
+SEGMENTED_MODEL   = True
+SEGMENT_QUANTILE  = 0.70
+
+
 USE_LOG_TRANSFORM = True
 REMOVE_OUTLIERS = True
 OUTLIER_PERCENTILE = 99.5
@@ -52,27 +71,27 @@ lgb_params_base = {
 DO_PERMUTATION_SELECTION = False
 
 # ==================== 路径（全部统一到新目录） ====================
-output_dir = r"./data\Data\GTNNWR\Result\LightGBM_GTNNWR"
-os.makedirs(output_dir, exist_ok=True)
+OUTPUT_DIR = r"./data/model_output"
+os.makedirs(OUTPUT_DIR, exist_ok=True)
 
-npz_path = r"./data\Data\GTNNWR\Result_data_all.npz"
+NPZ_PATH = r"./data/training_data.npz"
 
-model_save_path_base_txt  = os.path.join(output_dir, "lightgbm_gt_nnwr_base.txt")
-model_save_path_base_pkl  = os.path.join(output_dir, "lightgbm_gt_nnwr_base.pkl")
-model_save_path_low_txt   = os.path.join(output_dir, "lightgbm_gt_nnwr_low.txt")
-model_save_path_low_pkl   = os.path.join(output_dir, "lightgbm_gt_nnwr_low.pkl")
-model_save_path_high_txt  = os.path.join(output_dir, "lightgbm_gt_nnwr_high.txt")
-model_save_path_high_pkl  = os.path.join(output_dir, "lightgbm_gt_nnwr_high.pkl")
-model_save_path_single_txt = os.path.join(output_dir, "lightgbm_gt_nnwr_single.txt")
-model_save_path_single_pkl = os.path.join(output_dir, "lightgbm_gt_nnwr_single.pkl")
+OUTPUT_DIR + "/model_base.txt"  = os.path.join(output_dir, "lightgbm_gt_nnwr_base.txt")
+OUTPUT_DIR + "/model_base.pkl"  = os.path.join(output_dir, "lightgbm_gt_nnwr_base.pkl")
+OUTPUT_DIR + "/model_low.txt"   = os.path.join(output_dir, "lightgbm_gt_nnwr_low.txt")
+OUTPUT_DIR + "/model_low.pkl"   = os.path.join(output_dir, "lightgbm_gt_nnwr_low.pkl")
+OUTPUT_DIR + "/model_high.txt"  = os.path.join(output_dir, "lightgbm_gt_nnwr_high.txt")
+OUTPUT_DIR + "/model_high.pkl"  = os.path.join(output_dir, "lightgbm_gt_nnwr_high.pkl")
+OUTPUT_DIR + "/model_single.txt" = os.path.join(output_dir, "lightgbm_gt_nnwr_single.txt")
+OUTPUT_DIR + "/model_single.pkl" = os.path.join(output_dir, "lightgbm_gt_nnwr_single.pkl")
 
-features_path         = os.path.join(output_dir, "features.pkl")
-predictions_csv       = os.path.join(output_dir, "predictions_with_residuals.csv")
-perf_table_csv        = os.path.join(output_dir, "performance_table.csv")
-feature_importance_path = os.path.join(output_dir, "feature_importance_lightgbm.png")
-loss_curve_path       = os.path.join(output_dir, "rmse_training_curve.png")
+OUTPUT_DIR + "/features.pkl"         = os.path.join(output_dir, "features.pkl")
+OUTPUT_DIR + "/predictions.csv"       = os.path.join(output_dir, "predictions_with_residuals.csv")
+OUTPUT_DIR + "/performance.csv"        = os.path.join(output_dir, "performance_table.csv")
+OUTPUT_DIR + "/feature_importance.png" = os.path.join(output_dir, "feature_importance_lightgbm.png")
+OUTPUT_DIR + "/loss_curve.png"       = os.path.join(output_dir, "rmse_training_curve.png")
 
-frozen_parquet_path   = r"./data\Data\GTNNWR\prediction_frozen.parquet"
+FROZEN_PARQUET_PATH   = r"./data\Data\GTNNWR\prediction_frozen.parquet"
 
 # ==================== 加载数据 ====================
 print("正在加载原始数据...")
@@ -93,12 +112,12 @@ data = data.dropna()
 
 # ==================== 计算年份 + 1500m 网格聚合 ====================
 print("计算年份与 1500m 网格...")
-years = np.round(data['t'] * (2024 - 1990) + 1990).astype(int)
+years = np.round(data['t'] * (YEAR_END - YEAR_START) + YEAR_START).astype(int)
 data['year'] = years
-data['grid_x_new'] = np.floor(data['x'] / GRID_SIZE_NEW).astype(int)
-data['grid_y_new'] = np.floor(data['y'] / GRID_SIZE_NEW).astype(int)
-data['x_new'] = data['grid_x_new'] * GRID_SIZE_NEW + GRID_SIZE_NEW / 2
-data['y_new'] = data['grid_y_new'] * GRID_SIZE_NEW + GRID_SIZE_NEW / 2
+data['grid_x_new'] = np.floor(data['x'] / GRID_SIZE).astype(int)
+data['grid_y_new'] = np.floor(data['y'] / GRID_SIZE).astype(int)
+data['x_new'] = data['grid_x_new'] * GRID_SIZE + GRID_SIZE / 2
+data['y_new'] = data['grid_y_new'] * GRID_SIZE + GRID_SIZE / 2
 
 agg_dict = {
     'SOC_loss': 'mean', 'erosion': 'mean', 'R': 'mean', 'K': 'mean',
@@ -131,7 +150,7 @@ data_final['R_K_LS'] = data_final['R'] * data_final['K'] * data_final['LS']
 data_final['R_C_P'] = data_final['R'] * data_final['C'] * data_final['P']
 data_final['LS_P'] = data_final['LS'] * data_final['P']
 data_final['year_sq'] = data_final['year'] ** 2
-data_final['year_trend'] = (data_final['year'] - 1990) / (2024 - 1990)
+data_final['year_trend'] = (data_final['year'] - 1990) / (YEAR_END - YEAR_START)
 
 year_stats = data_final.groupby('year')[['R', 'K', 'LS', 'C', 'P']].mean().add_prefix('year_mean_')
 data_final = data_final.merge(year_stats, on='year', how='left')
@@ -146,7 +165,7 @@ data_final['norm_y'] = (data_final['y'] - data_final['y'].min()) / (data_final['
 if USE_NEIGHBOR_FEATURES:
     print(f"计算空间邻域均值特征（K={K_NEIGHBORS}）...")
     unique_grids = data_final[['grid_x_new', 'grid_y_new']].drop_duplicates().reset_index(drop=True)
-    coords = (unique_grids[['grid_x_new', 'grid_y_new']].values * GRID_SIZE_NEW) + GRID_SIZE_NEW / 2
+    coords = (unique_grids[['grid_x_new', 'grid_y_new']].values * GRID_SIZE) + GRID_SIZE / 2
     nn = NearestNeighbors(n_neighbors=K_NEIGHBORS + 1, metric='euclidean')
     nn.fit(coords)
     distances, indices = nn.kneighbors(coords)
@@ -169,8 +188,8 @@ if ADD_LAG_FEATURES:
     data_final['erosion_lag1'] = data_final['erosion_lag1'].fillna(data_final.groupby(['grid_x_new','grid_y_new'])['erosion'].transform('mean'))
     data_final['R_lag1'] = data_final['R_lag1'].fillna(data_final.groupby(['grid_x_new','grid_y_new'])['R'].transform('mean'))
 
-centroid_x = data_final['x'].mean()
-centroid_y = data_final['y'].mean()
+# centroid computed from data
+
 data_final['dist_to_centroid'] = np.sqrt((data_final['x'] - centroid_x)**2 + (data_final['y'] - centroid_y)**2)
 data_final['dist_to_centroid_norm'] = (data_final['dist_to_centroid'] - data_final['dist_to_centroid'].min()) / (data_final['dist_to_centroid'].max() - data_final['dist_to_centroid'].min() + 1e-8)
 
@@ -334,15 +353,15 @@ perf_table = pd.DataFrame({
     "mape": [val_metrics["mape"], test_metrics["mape"]],
     "rmse_log": [val_metrics["rmse_log"], test_metrics["rmse_log"]]
 })
-perf_table.to_csv(perf_table_csv, index=False)
-print(f"性能表保存：{perf_table_csv}")
+perf_table.to_csv(OUTPUT_DIR + "/performance.csv", index=False)
+print(f"性能表保存：{OUTPUT_DIR + "/performance.csv"}")
 
 # ==================== 保存预测与残差 ====================
 val_out = val_df.copy().assign(pred=val_pred, residual=val_pred - val_df['SOC_loss'])
 test_out = test_df.copy().assign(pred=test_pred, residual=test_pred - test_df['SOC_loss'])
 all_out = pd.concat([val_out, test_out], ignore_index=True)
-all_out.to_csv(predictions_csv, index=False)
-print(f"预测与残差保存：{predictions_csv}")
+all_out.to_csv(OUTPUT_DIR + "/predictions.csv", index=False)
+print(f"预测与残差保存：{OUTPUT_DIR + "/predictions.csv"}")
 
 # ==================== 冻结全数据集预测 ====================
 print("\n=== 冻结整个数据集预测 ===")
@@ -355,8 +374,8 @@ else:
 df_out = data_final.copy()
 df_out["预测_SOC_loss"] = full_pred
 df_out["残差"] = full_pred - df_out["SOC_loss"]
-df_out.to_parquet(frozen_parquet_path)
-print(f"冻结预测结果保存：{frozen_parquet_path}")
+df_out.to_parquet(FROZEN_PARQUET_PATH)
+print(f"冻结预测结果保存：{FROZEN_PARQUET_PATH}")
 
 # ==================== 保存模型（.txt + .pkl） ====================
 def save_model_both_formats(model, path_txt, path_pkl):
@@ -376,16 +395,16 @@ def save_model_both_formats(model, path_txt, path_pkl):
 
 print("\n=== 保存模型（.txt 和 .pkl） ===")
 if SEGMENTED_MODEL:
-    save_model_both_formats(base_model, model_save_path_base_txt, model_save_path_base_pkl)
+    save_model_both_formats(base_model, OUTPUT_DIR + "/model_base.txt", OUTPUT_DIR + "/model_base.pkl")
     if models.get(0) is not None:
-        save_model_both_formats(models[0], model_save_path_low_txt, model_save_path_low_pkl)
+        save_model_both_formats(models[0], OUTPUT_DIR + "/model_low.txt", OUTPUT_DIR + "/model_low.pkl")
     if models.get(1) is not None:
-        save_model_both_formats(models[1], model_save_path_high_txt, model_save_path_high_pkl)
-    joblib.dump(features, features_path)
+        save_model_both_formats(models[1], OUTPUT_DIR + "/model_high.txt", OUTPUT_DIR + "/model_high.pkl")
+    joblib.dump(features, OUTPUT_DIR + "/features.pkl")
 else:
-    save_model_both_formats(model_single, model_save_path_single_txt, model_save_path_single_pkl)
-    joblib.dump(features, features_path)
+    save_model_both_formats(model_single, OUTPUT_DIR + "/model_single.txt", OUTPUT_DIR + "/model_single.pkl")
+    joblib.dump(features, OUTPUT_DIR + "/features.pkl")
 
 print("\n全部完成。")
 print("模型文件（.txt & .pkl）保存在：", output_dir)
-print("冻结预测文件：", frozen_parquet_path)
+print("冻结预测文件：", FROZEN_PARQUET_PATH)

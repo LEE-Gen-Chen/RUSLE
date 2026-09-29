@@ -32,13 +32,13 @@ except Exception as e:
         raise e
 
 # 配置参数
-roi_fc = ee.FeatureCollection('projects/YOUR_PROJECT_ID/assets/GD_City')
+roi_fc = ee.FeatureCollection('projects/YOUR_PROJECT_ID/assets/YOUR_ASSET_NAME')
 # 将FeatureCollection转换为Geometry（使用边界框）
 roi = roi_fc.geometry().bounds()  # 使用边界框而不是完整几何，减少复杂度
 
 local_save_path = r'./data\NDVI'
 scale = 100  # 增大分辨率以减少数据量
-crs = 'EPSG:4547'  # 坐标系
+crs = 'YOUR_CRS_EPSG'  # 坐标系
 
 # 确保本地目录存在
 os.makedirs(local_save_path, exist_ok=True)

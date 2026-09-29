@@ -5,13 +5,21 @@ import concurrent.futures
 from tqdm import tqdm
 from datetime import datetime
 
+# ==================== 配置参数 ====================
+YEAR_START = 1990   # 起始年份
+YEAR_END   = 2024   # 结束年份
+CRS        = "EPSG:4326"  # 输出坐标系
+SCALE      = 500    # 下载分辨率（米）
+OUTPUT_DIR = r"./data"
+
+
 # ============================================
 # 初始化 Earth Engine
 # ============================================
 ee.Initialize(project='YOUR_PROJECT_ID')
 
 # 研究区（广东）
-study_area = ee.FeatureCollection("projects/YOUR_PROJECT_ID/assets/GD")
+STUDY_AREA = ee.FeatureCollection("projects/YOUR_PROJECT_ID/assets/YOUR_ASSET_NAME")
 
 # 数据集：ERA5-Land 月总降水量
 dataset = ee.ImageCollection("ECMWF/ERA5_LAND/MONTHLY_AGGR") \
@@ -23,7 +31,7 @@ output_dir = r"./data\GEE\data_Precipitation"
 os.makedirs(output_dir, exist_ok=True)
 
 # 分辨率
-scale = 1000
+SCALE = 1000
 
 # ============================================
 # 单月下载函数
@@ -48,8 +56,8 @@ def download_month(year, month):
         # 生成下载链接
         url = img_mm.getDownloadURL({
             'region': study_area.geometry(),
-            'scale': scale,
-            'crs': 'EPSG:4326',
+            'scale': SCALE,
+            'crs': CRS,
             'format': 'GEO_TIFF'
         })
 

@@ -5,6 +5,14 @@ import time
 from datetime import datetime
 from tqdm import tqdm
 
+# ==================== 配置参数 ====================
+YEAR_START = 1990   # 起始年份
+YEAR_END   = 2024   # 结束年份
+CRS        = "EPSG:4326"  # 输出坐标系
+SCALE      = 500    # 下载分辨率（米）
+OUTPUT_DIR = r"./data"
+
+
 # 检查并安装缺失的依赖（保持你原有的流程）
 try:
     import geedim
@@ -27,11 +35,11 @@ except Exception as e:
         raise e
 
 # ========== 配置 ==========
-roi_fc = ee.FeatureCollection('projects/YOUR_PROJECT_ID/assets/GD_City')
-roi = roi_fc.geometry().bounds()
+ROI_FC = ee.FeatureCollection('projects/YOUR_PROJECT_ID/assets/YOUR_ASSET_NAME')
+roi = ROI_FC.geometry().bounds()
 local_save_path = r'./data\EVI'   # 保存目录（你可以改名为 NDVI/EVI）
-scale = 90
-crs = 'EPSG:4547'
+SCALE = 90
+CRS = 'YOUR_CRS_EPSG'
 os.makedirs(local_save_path, exist_ok=True)
 
 # 仅下载 EVI
@@ -56,8 +64,8 @@ def download_ee_image_with_retry(image, filename, region, scale=100, max_retries
                 image=image,
                 filename=filename,
                 region=region,
-                scale=scale,
-                crs=crs,
+                scale=SCALE,
+                crs=CRS,
             )
             print(f"✅ 成功下载: {os.path.basename(filename)}")
             return True
@@ -118,7 +126,7 @@ def calculateAnnualIndexStats(annual_collection, band_name, prefix=None):
 
 # ========== 加载 Landsat（分段以避免单次请求过大） ==========
 print("📡 正在加载Landsat数据...")
-print(f"研究区域特征数量: {get_info_with_retry(roi_fc.size())}")
+print(f"研究区域特征数量: {get_info_with_retry(ROI_FC.size())}")
 print(f"研究区域边界: {get_info_with_retry(roi.bounds())}")
 
 def load_landsat_data():

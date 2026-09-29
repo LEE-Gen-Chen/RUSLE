@@ -20,10 +20,10 @@ from numba import cuda, jit
 import math
 
 # =========== 配置区域 =============
-GD_SHP = r"./data\Geoscene\GD.shp"
-MONTHLY_DIR = r"./data\Precipitation\Monthly_30m"
-ANNUAL_DIR = r"./data\Precipitation\Annual_30m"
-OUT_DIR = r"./data\Precipitation\R_output"
+GD_SHP = r"./data/boundary.shp"
+MONTHLY_DIR = r"./data/precipitation/monthly"
+ANNUAL_DIR = r"./data/precipitation/annual"
+OUT_DIR = r"./data/R_output"
 os.makedirs(OUT_DIR, exist_ok=True)
 
 # 读取广东 shp

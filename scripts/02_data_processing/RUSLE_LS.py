@@ -103,12 +103,12 @@ def calculate_length_factor(slope_degrees, lambda_values):
 
 def main():
     # 文件路径
-    dem_path = r"./data\Geoscene\GD_DEM.tif"
-    slope_path = r"./data\Geoscene\Slope.tif"
-    dem_resampled_path = r"./data\Geoscene\DEM_Resampled.tif"
-    output_s_path = r"./data\Geoscene\S_Factor.tif"
-    output_l_path = r"./data\Geoscene\L_Factor.tif"
-    output_ls_path = r"./data\Geoscene\LS_Factor.tif"  # 新增LS综合因子
+    dem_path = r"./data/dem.tif"
+    slope_path = r"./data/slope.tif"
+    dem_resampled_path = r"./data/dem_resampled.tif"
+    output_s_path = r"./data/S_factor.tif"
+    output_l_path = r"./data/L_factor.tif"
+    output_ls_path = r"./data/LS_factor.tif"  # 新增LS综合因子
 
     try:
         print("步骤1: 重采样DEM到坡度数据尺寸...")

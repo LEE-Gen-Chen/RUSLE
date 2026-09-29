@@ -483,8 +483,8 @@ if __name__ == "__main__":
         plt.show()
 
         # 保存结果
-        yearly_predictions.to_excel('EVI_C_Predictions_Yearly.xlsx', index=False)
-        yearly_summary.to_excel('Yearly_Weighted_C_Factor.xlsx', index=False)
+        yearly_predictions.to_excel(os.path.join(OUTPUT_DIR, 'EVI_C_Predictions_Yearly.xlsx'), index=False)
+        yearly_summary.to_excel(os.path.join(OUTPUT_DIR, 'Yearly_Weighted_C_Factor.xlsx'), index=False)
 
         # 保存模型信息
         model_info = pd.DataFrame({
@@ -494,7 +494,7 @@ if __name__ == "__main__":
             'RMSE': [result['rmse']],
             '参数': [best_parameters]
         })
-        model_info.to_excel('Best_Model_Info.xlsx', index=False)
+        model_info.to_excel(os.path.join(OUTPUT_DIR, 'Best_Model_Info.xlsx'), index=False)
 
         print(f"\n结果已保存到:")
         print("- EVI_C_Predictions_Yearly.xlsx (年度详细预测)")

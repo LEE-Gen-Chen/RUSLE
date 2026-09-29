@@ -18,7 +18,7 @@ os.makedirs(out_y, exist_ok=True)
 
 # ----------- 2. 投影与分辨率 -----------
 src_crs   = 'EPSG:4326'
-dst_crs   = 'EPSG:4547'      # CGCS2000 / 3° GK CM 114°
+dst_crs   = 'YOUR_CRS_EPSG'      # CGCS2000 / 3° GK CM 114°
 dst_res   = 30               # 30 m
 
 # ----------- 3. 通用转换函数 -----------
