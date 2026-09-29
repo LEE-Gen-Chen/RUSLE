@@ -16,7 +16,7 @@
 - ⛰️ **LS 因子** — 坡长坡度因子（SRTM DEM）
 - 🚜 **P 因子** — 水土保持措施因子
 - 📊 **有机碳流失** — RUSLE–SOC 耦合模型
-- 🤖 **机器学习预测** — LightGBM + GTNNWR 有机碳空间预测
+- 🤖 **机器学习预测** — LightGBM 地表有机碳空间预测
 
 ## 技术流程
 
@@ -31,7 +31,7 @@
          ↓
 有机碳密度建模 → 碳流失估算
          ↓
-  LightGBM+GTNNWR 空间降尺度预测
+  LightGBM 空间降尺度预测
 ```
 
 ## 目录结构
@@ -41,8 +41,6 @@ RUSLE-Guangdong/
 ├── README.md
 ├── requirements.txt
 ├── .gitignore
-├── docs/
-│   └── 技术流程图.png          # 论文技术路线图
 ├── notebooks/
 │   └── GEE_数据下载与处理流程.ipynb
 ├── scripts/
@@ -50,39 +48,37 @@ RUSLE-Guangdong/
 │   │   ├── main.py           # NDVI/EVI年度数据下载
 │   │   ├── pre.py            # ERA5月降水数据下载
 │   │   ├── pre_daily.py      # ERA5日降水数据下载
+│   │   ├── Annual_pre.py     # 年尺度降水汇总
+│   │   ├── Project_Pre.py    # 指定区域降水统计
 │   │   ├── EVI.py            # EVI数据下载与处理
-│   │   ├── NDVI.py          # NDVI数据下载与处理
-│   │   ├── DEM.py           # DEM下载（SRTM）
-│   │   ├── Soil.py          # 土壤数据下载（HWSD）
-│   │   └── Landsat.py       # Landsat数据下载
-│   ├── 02_data_processing/   # 本地栅格处理
-│   │   ├── RUSLE.py         # RUSLE主方程
-│   │   ├── RUSLE_R.py       # R因子计算（Arnoldus公式）
-│   │   ├── RUSLE_K.py       # K因子计算（EPIC模型）
-│   │   ├── RUSLE_LS.py     # LS因子计算
-│   │   ├── RUSLE_C.py       # C因子计算（EVI-NDVI方法）
-│   │   ├── RUSLE_P.py       # P因子估算
-│   │   ├── HWSD_K.py        # HWSD土壤可蚀性处理
+│   │   ├── NDVI.py           # NDVI数据下载与处理
+│   │   ├── NDVI_EVI.py       # NDVI/EVI联合处理
+│   │   ├── DEM.py            # DEM下载（SRTM）
+│   │   ├── Soil.py           # 土壤数据下载（HWSD）
+│   │   ├── SoilGrids.py      # SoilGrids数据下载
+│   │   └── Landsat.py        # Landsat数据下载
+│   ├── 02_data_processing/  # 本地栅格处理
+│   │   ├── RUSLE.py          # RUSLE主方程
+│   │   ├── RUSLE_R.py        # R因子计算（Arnoldus公式）
+│   │   ├── RUSLE_K.py        # K因子计算（EPIC模型）
+│   │   ├── RUSLE_LS.py       # LS因子计算
+│   │   ├── RUSLE_C.py        # C因子计算（EVI-NDVI方法）
+│   │   ├── RUSLE_P.py        # P因子估算
+│   │   ├── HWSD_K.py         # HWSD土壤可蚀性处理
 │   │   ├── resample_K.py     # K因子重采样
 │   │   ├── Resample_C.py     # C因子重采样
-│   │   ├── EVI_STATS.py     # EVI统计
+│   │   ├── EVI_STATS.py      # EVI统计
 │   │   ├── Carbon_InVest.py  # InVEST碳储量估算
+│   │   ├── carbon_dataset.py # 碳密度数据集处理
+│   │   ├── tiff_to_npz.py    # 栅格转npz格式
 │   │   └── 碳流失方程.py     # 有机碳流失方程
 │   └── 03_modeling/          # 建模与预测
-│       ├── LightGBM+GTNNWR.py      # 耦合模型预测
-│       ├── GTNNWR.py               # GTNNWR神经网络
-│       ├── XGBoost_0120.py         # XGBoost建模
-│       ├── RUSLE_Statistics.py      # 侵蚀统计与精度验证
-│       ├── Markov_CLCD.py           # Markov土地利用转移
+│       ├── LightGBM+GTNNWR.py   # 耦合模型预测
+│       ├── Markov_CLCD.py       # Markov土地利用转移
 │       ├── Plot_Transition_CLCD.py  # 转移矩阵可视化
-│       └── tiff_to_npz.py          # 数据格式转换
-└── figures/
-    ├── 各城市土壤侵蚀模数变化趋势.png
-    ├── 土壤侵蚀模数热力图.png
-    ├── 土壤侵蚀模数分布箱线图.png
-    ├── 分段时期土壤侵蚀模数变化趋势.png
-    ├── 模型对比图.png
-    └── RUSLE_知识图谱_紧凑美观版.png
+│       ├── RUSLE_Statistics.py  # 侵蚀统计
+│       ├── 重心迁移.py          # 重心迁移分析
+│       └── 知识图谱.py         # 知识图谱构建
 ```
 
 ## 环境配置
@@ -95,7 +91,7 @@ pip install -r requirements.txt
 - `earthengine-api` — GEE 接口
 - `geemap` / `geedim` — GEE 可视化与处理
 - `rasterio` / `geopandas` — 栅格/矢量数据处理
-- `lightgbm` / `xgboost` / `torch` — 机器学习建模
+- `lightgbm` / `torch` — 机器学习建模
 - `numba` — GPU 加速
 - `matplotlib` / `seaborn` — 可视化
 
@@ -108,7 +104,7 @@ pip install -r requirements.txt
 ee.Initialize(project='YOUR_PROJECT_ID')
 
 # 研究区资产路径（替换占位符）
-roi = ee.FeatureCollection('projects/YOUR_PROJECT_ID/assets/GD_Area')
+roi = ee.FeatureCollection('projects/YOUR_PROJECT_ID/assets/YOUR_ASSET_NAME')
 ```
 
 ### 2. RUSLE 计算
@@ -117,7 +113,7 @@ roi = ee.FeatureCollection('projects/YOUR_PROJECT_ID/assets/GD_Area')
 from RUSLE import RUSLECalculator
 
 calc = RUSLECalculator(target_resolution=30, target_crs="EPSG:4547")
-calc.load_gd_boundary('./data/GD_boundary.shp')
+calc.load_boundary('./data/boundary.shp')
 ```
 
 ### 3. 有机碳预测
@@ -148,10 +144,6 @@ model = train_and_predict(X_train, Y_train, X_predict)
 李创杰. 基于RUSLE模型的广东省土壤侵蚀与地表有机碳流失时空耦合研究.
 惠州学院本科毕业论文, 2026.
 ```
-
-## 免责声明
-
-本项目仅供学习和研究使用。数据版权归属各数据集发布机构。
 
 ## 许可
 

@@ -106,13 +106,9 @@ model_*.pkl
 # ============================
 # 图片与媒体
 # ============================
-# 保留 figures/ 目录的图（其他 png/jpg 按需屏蔽）
+# 保留 figures/ 目录（包含子目录）所有文件
 !figures/
-figures/*.png
-figures/*.jpg
-figures/*.jpeg
-
-# 其他图片（屏蔽）
+# 不单独屏蔽 figures/ 内的图片
 *.gif
 *.bmp
 *.webp
