@@ -20,7 +20,7 @@ PRED_2024 = os.path.join(BASE, "pred_erosion_2024.tif")
 MGWR_DIR = os.path.join(BASE, "MGWR_coeff")
 X_NPY = os.path.join(BASE, "X_train.npy")
 Y_NPY = os.path.join(BASE, "Y_train.npy")
-RUSLE_REF = os.path.join(BASE, r"土壤侵蚀模数\RUSLE2020.tif")
+RUSLE_REF = os.path.join(BASE, r"erosion\RUSLE2020.tif")
 
 # 输出目录
 os.makedirs(os.path.join(BASE, "Nature_Figures"), exist_ok=True)

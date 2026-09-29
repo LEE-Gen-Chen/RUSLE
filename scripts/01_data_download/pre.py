@@ -11,7 +11,7 @@ from datetime import datetime
 ee.Initialize(project='YOUR_PROJECT_ID')
 
 # 研究区（广东）
-guangdong = ee.FeatureCollection("projects/YOUR_PROJECT_ID/assets/GD")
+study_area = ee.FeatureCollection("projects/YOUR_PROJECT_ID/assets/GD")
 
 # 数据集：ERA5-Land 月总降水量
 dataset = ee.ImageCollection("ECMWF/ERA5_LAND/MONTHLY_AGGR") \
@@ -34,7 +34,7 @@ def download_month(year, month):
         start = ee.Date.fromYMD(year, month, 1)
         end = start.advance(1, 'month')
         img = dataset.filterDate(start, end).mean()  # 取月均值（等价于总量）
-        img_mm = img.multiply(1000).rename('precipitation_mm').clip(guangdong)
+        img_mm = img.multiply(1000).rename('precipitation_mm').clip(study_area)
 
         # 文件名
         month_str = f"{month:02d}"
@@ -47,7 +47,7 @@ def download_month(year, month):
 
         # 生成下载链接
         url = img_mm.getDownloadURL({
-            'region': guangdong.geometry(),
+            'region': study_area.geometry(),
             'scale': scale,
             'crs': 'EPSG:4326',
             'format': 'GEO_TIFF'

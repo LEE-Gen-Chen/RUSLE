@@ -51,12 +51,12 @@ def read_hwsd_soc_weighted(mdb_path):
         exit(1)
 
 
-def extract_soc_raster(hwsd_gd_raster_path, hwsd_mdb_path, output_soc_path):
+def extract_soc_raster(hwsd_raster_path, hwsd_mdb_path, output_soc_path):
     """
     从HWSD数据中提取表层土壤有机碳含量栅格（0-30cm）
 
     参数:
-    hwsd_gd_raster_path: 已投影裁剪的广东省HWSD栅格（存储MU_GLOBAL）
+    hwsd_raster_path: 已投影裁剪的广东省HWSD栅格（存储MU_GLOBAL）
     hwsd_mdb_path: HWSD MDB文件路径
     output_soc_path: 输出的SOC栅格路径（单位：g/kg）
     """
@@ -66,7 +66,7 @@ def extract_soc_raster(hwsd_gd_raster_path, hwsd_mdb_path, output_soc_path):
 
     # 1. 读取HWSD栅格
     print("\n[步骤1] 读取HWSD栅格...")
-    with rasterio.open(hwsd_gd_raster_path) as src:
+    with rasterio.open(hwsd_raster_path) as src:
         hwsd_data = src.read(1)
         src_profile = src.profile
         print(f"   栅格尺寸: {src.width} × {src.height} 像元")
@@ -140,10 +140,10 @@ def main():
     """主函数"""
     # ==================== 参数设置 ====================
     # HWSD栅格数据（MU_GLOBAL）
-    hwsd_gd_raster_path = r"./data\中国土壤数据集\HWSD_RASTER\hwsd_GD.tif"
+    hwsd_raster_path = r"./data\soil\HWSD_RASTER\hwsd_region.tif"
 
     # HWSD属性数据库
-    hwsd_mdb_path = r"./data\中国土壤数据集\HWSD.mdb"
+    hwsd_mdb_path = r"./data\soil\HWSD.mdb"
 
     # 输出SOC栅格路径
     output_soc_path = r"./data\土壤属性\SOC_30_weighted.tif"
@@ -165,7 +165,7 @@ def main():
 
     try:
         extract_soc_raster(
-            hwsd_gd_raster_path=hwsd_gd_raster_path,
+            hwsd_raster_path=hwsd_raster_path,
             hwsd_mdb_path=hwsd_mdb_path,
             output_soc_path=output_soc_path
         )
@@ -173,12 +173,12 @@ def main():
         print("\n" + "=" * 60)
         print("✓ SOC栅格提取完成！")
         print("=" * 60)
-        print("\n【下一步：地表碳流失计算】")
+        print("\n【下一步：地表carbon计算】")
         print("1. 在ArcGIS/Python中加载以下数据：")
         print(f"   - SOC栅格: {os.path.basename(output_soc_path)}")
         print("   - 侵蚀模数栅格: A_YYYY.tif (单位: t/ha/yr)")
         print("   - 容重栅格: BD.tif (单位: g/cm³)")
-        print("\n2. 使用以下正确方程计算有机碳流失量：")
+        print("\n2. 使用以下正确方程计算有机carbon量：")
         print("   SOC_loss = SOC × BD × 30 × (A × 10) × 0.855")
         print("   单位: g C m⁻² yr⁻¹")
         print("\n3. Python实现示例：")

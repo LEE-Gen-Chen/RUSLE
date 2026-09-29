@@ -43,7 +43,7 @@ set_chinese_font()
 
 def plot_all_cities_summary():
     """
-    将所有地市的土壤侵蚀模数变化趋势汇总到一张大图中
+    将所有地市的erosion变化趋势汇总到一张大图中
     """
     # 设置数据路径
     data_dir = r"./data\RUSLE\土壤侵蚀分析\地市土壤侵蚀数据"
@@ -54,7 +54,7 @@ def plot_all_cities_summary():
         os.makedirs(output_dir)
 
     # 获取所有地市CSV文件
-    city_files = [f for f in os.listdir(data_dir) if f.endswith('.csv') and '土壤侵蚀模数' in f]
+    city_files = [f for f in os.listdir(data_dir) if f.endswith('.csv') and 'erosion' in f]
 
     if not city_files:
         print("未找到任何地市数据文件")
@@ -76,7 +76,7 @@ def plot_all_cities_summary():
 
         try:
             # 提取地市名称
-            city_name = city_file.replace('土壤侵蚀模数.csv', '')
+            city_name = city_file.replace('erosion.csv', '')
 
             # 读取CSV文件
             file_path = os.path.join(data_dir, city_file)
@@ -143,7 +143,7 @@ def plot_all_cities_summary():
         axes[j].set_visible(False)
 
     # 设置总标题 - 调整位置和字体大小
-    plt.suptitle('广东省各地市土壤侵蚀模数变化趋势 (1990-2024)',
+    plt.suptitle('广东省各地市erosion变化趋势 (1990-2024)',
                  fontsize=40, fontweight='bold', y=0.98)
 
     # 调整布局 - 增加子图间距
@@ -151,9 +151,9 @@ def plot_all_cities_summary():
     plt.subplots_adjust(top=0.9, hspace=0.6, wspace=0.5)  # 增加水平和垂直间距
 
     # 保存汇总图表
-    output_file = os.path.join(output_dir, '广东省各地市土壤侵蚀模数变化汇总图.png')
+    output_file = os.path.join(output_dir, '广东省各地市erosion变化汇总图.png')
     plt.savefig(output_file, dpi=500, bbox_inches='tight')
-    print(f"已保存: 广东省各地市土壤侵蚀模数变化汇总图.png")
+    print(f"已保存: 广东省各地市erosion变化汇总图.png")
 
 
     # 关闭图表
@@ -192,10 +192,10 @@ def create_comparison_line_chart(all_cities_data):
             legend_labels.append(city_name)
 
     # 设置图表标题和标签 - 增加字体大小
-    plt.title('广东省各地市土壤侵蚀模数变化趋势对比 (1990-2024)',
+    plt.title('广东省各地市erosion变化趋势对比 (1990-2024)',
               fontsize=30, fontweight='bold', pad=20)
     plt.xlabel('年份', fontsize=16)
-    plt.ylabel('土壤侵蚀模数 (t/km^2·a)', fontsize=16)
+    plt.ylabel('erosion (t/km^2·a)', fontsize=16)
 
     # 设置坐标轴标签字体大小
     plt.xticks(fontsize=15)
@@ -216,9 +216,9 @@ def create_comparison_line_chart(all_cities_data):
     plt.tight_layout()
 
     # 保存对比图表
-    output_file = os.path.join(output_dir, '广东省各地市土壤侵蚀模数变化对比图.png')
+    output_file = os.path.join(output_dir, '广东省各地市erosion变化对比图.png')
     plt.savefig(output_file, dpi=500, bbox_inches='tight')
-    print(f"已保存: 广东省各地市土壤侵蚀模数变化对比图.png")
+    print(f"已保存: 广东省各地市erosion变化对比图.png")
 
     # 关闭图表
     plt.close()
@@ -264,16 +264,16 @@ def analyze_regional_trends(all_cities_data):
                         color=colors[i], label=city_name, alpha=0.8)
 
         # 增加区域图表的字体大小
-        ax.set_title(f'{region_name}土壤侵蚀模数变化', fontsize=18, fontweight='bold')
+        ax.set_title(f'{region_name}erosion变化', fontsize=18, fontweight='bold')
         ax.set_xlabel('年份', fontsize=18)
-        ax.set_ylabel('土壤侵蚀模数 (t/km^2·a)', fontsize=18)
+        ax.set_ylabel('erosion (t/km^2·a)', fontsize=18)
         ax.legend(fontsize=11)
         ax.grid(True, alpha=0.3)
         ax.tick_params(axis='x', rotation=45, labelsize=12)
         ax.tick_params(axis='y', labelsize=12)
 
     # 调整主标题 - 增加字体大小和调整位置
-    plt.suptitle('广东省各地区土壤侵蚀模数变化趋势 (1990-2024)',
+    plt.suptitle('广东省各地区erosion变化趋势 (1990-2024)',
                  fontsize=30, fontweight='bold', y=0.98)
 
     # 调整布局
@@ -281,16 +281,16 @@ def analyze_regional_trends(all_cities_data):
     plt.subplots_adjust(top=0.93, hspace=0.3, wspace=0.3)
 
     # 保存区域分组图表
-    output_file = os.path.join(output_dir, '广东省各地区土壤侵蚀模数变化趋势.png')
+    output_file = os.path.join(output_dir, '广东省各地区erosion变化趋势.png')
     plt.savefig(output_file, dpi=300, bbox_inches='tight')
-    print(f"已保存: 广东省各地区土壤侵蚀模数变化趋势.png")
+    print(f"已保存: 广东省各地区erosion变化趋势.png")
 
     plt.close()
 
 
 # 主程序
 if __name__ == "__main__":
-    print("开始生成土壤侵蚀模数变化图表...")
+    print("开始生成erosion变化图表...")
 
     # 生成所有地市的汇总子图
     all_cities_data = plot_all_cities_summary()
@@ -305,8 +305,8 @@ if __name__ == "__main__":
         print("\n✅ 所有图表生成完成！")
         print("生成的图表保存在: H:\\毕业论文\\RUSLE\\土壤侵蚀分析\\地市侵蚀模数变化图")
         print("包括:")
-        print("  - 广东省各地市土壤侵蚀模数变化汇总图.png (5x5子图汇总)")
-        print("  - 广东省各地市土壤侵蚀模数变化对比图.png (所有城市在同一坐标系)")
-        print("  - 广东省各地区土壤侵蚀模数变化趋势.png (按区域分组)")
+        print("  - 广东省各地市erosion变化汇总图.png (5x5子图汇总)")
+        print("  - 广东省各地市erosion变化对比图.png (所有城市在同一坐标系)")
+        print("  - 广东省各地区erosion变化趋势.png (按区域分组)")
     else:
         print("❌ 数据处理失败，请检查文件路径和格式")

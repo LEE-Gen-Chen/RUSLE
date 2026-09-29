@@ -219,11 +219,11 @@ def main():
     """主函数"""
 
     # 输入输出文件路径
-    input_k_path = r"./data\中国土壤数据集\HWSD_RASTER\RUSLE_K.tif"
-    output_30m_path = r"./data\中国土壤数据集\HWSD_Resample\RUSLE_K_30m.tif"
-    output_plot_path = r"./data\中国土壤数据集\HWSD_Resample\K_value_distribution.tif"
-    output_csv_path = r"./data\中国土壤数据集\HWSD_Resample\K_value_distribution.csv"
-    output_detailed_csv_path = r"./data\中国土壤数据集\HWSD_Resample\K_value_detailed_stats.csv"
+    input_k_path = r"./data\soil\HWSD_RASTER\RUSLE_K.tif"
+    output_30m_path = r"./data\soil\HWSD_Resample\RUSLE_K_30m.tif"
+    output_plot_path = r"./data\soil\HWSD_Resample\K_value_distribution.tif"
+    output_csv_path = r"./data\soil\HWSD_Resample\K_value_distribution.csv"
+    output_detailed_csv_path = r"./data\soil\HWSD_Resample\K_value_detailed_stats.csv"
 
     # 确保输出目录存在
     os.makedirs(os.path.dirname(output_30m_path), exist_ok=True)

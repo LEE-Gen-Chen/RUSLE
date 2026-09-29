@@ -14,8 +14,8 @@ sys.stdout.reconfigure(encoding='utf-8')
 ee.Initialize(project='YOUR_PROJECT_ID')
 
 # 广东省边界与市级行政区（假设你的资产包含每个市的 Feature）
-guangdong_fc = ee.FeatureCollection("projects/YOUR_PROJECT_ID/assets/GD_City")
-city_list = guangdong_fc.aggregate_array("City").getInfo()
+study_area_fc = ee.FeatureCollection("projects/YOUR_PROJECT_ID/assets/GD_City")
+city_list = study_area_fc.aggregate_array("City").getInfo()
 
 print("城市字段示例：", city_list[:10])
 print("城市数量：", len(city_list))
@@ -29,7 +29,7 @@ landsat_all = (
     .merge(ee.ImageCollection("LANDSAT/LC08/C02/T1_L2"))
     .merge(ee.ImageCollection("LANDSAT/LC09/C02/T1_L2"))
     .filterDate("1985-01-01", "2025-01-01")
-    .filterBounds(guangdong_fc)
+    .filterBounds(study_area_fc)
 )
 
 # ============================================
@@ -69,7 +69,7 @@ scale = 30
 # ============================================
 def download_best_landsat(year, month, city_name):
     try:
-        region = guangdong_fc.filter(ee.Filter.eq("City", city_name)).geometry()  # 修正
+        region = study_area_fc.filter(ee.Filter.eq("City", city_name)).geometry()  # 修正
         start = ee.Date.fromYMD(year, month, 1)
         end = start.advance(1, "month")
         month_col = landsat_all.filterDate(start, end).filterBounds(region)

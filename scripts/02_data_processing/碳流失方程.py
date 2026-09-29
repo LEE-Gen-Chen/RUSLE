@@ -79,25 +79,25 @@ def read_hwsd_soc_alternative(mdb_path):
         exit(1)
 
 
-def calculate_soil_carbon_loss_gd(hwsd_gd_raster_path, hwsd_mdb_path,
+def calculate_soil_carbon_loss_gd(hwsd_raster_path, hwsd_mdb_path,
                                   erosion_raster_path, output_path, Er=0.855):
     """
-    使用HWSD数据和RUSLE侵蚀模数计算土壤有机碳流失量
+    使用HWSD数据和RUSLE侵蚀模数计算土壤有机carbon量
 
     参数:
-    hwsd_gd_raster_path: 已投影和裁剪的HWSD栅格数据路径（广东省）
+    hwsd_raster_path: 已投影和裁剪的HWSD栅格数据路径（广东省）
     hwsd_mdb_path: HWSD MDB文件路径
     erosion_raster_path: RUSLE侵蚀模数栅格路径（单位：t/(km²·a)）
-    output_path: 输出碳流失量栅格路径（单位：t/(km²·a)）
+    output_path: 输出carbon量栅格路径（单位：t/(km²·a)）
     Er: 侵蚀泥沙富集系数（默认0.855）
     """
     print("=" * 50)
-    print("土壤有机碳流失量计算")
+    print("土壤有机carbon量计算")
     print("=" * 50)
 
     # 1. 读取HWSD栅格数据（获取MU_GLOBAL空间分布）
     print("\n[1/4] 正在读取广东省HWSD栅格数据...")
-    with rasterio.open(hwsd_gd_raster_path) as src:
+    with rasterio.open(hwsd_raster_path) as src:
         hwsd_data = src.read(1)
         src_profile = src.profile
         src_crs = src.crs
@@ -154,8 +154,8 @@ def calculate_soil_carbon_loss_gd(hwsd_gd_raster_path, hwsd_mdb_path,
     # 生成有机碳栅格
     soc_raster = create_soc_raster(hwsd_data, mu_to_soc)
 
-    # 5. 计算土壤有机碳流失量
-    print("\n正在计算碳流失量...")
+    # 5. 计算土壤有机carbon量
+    print("\n正在计算carbon量...")
     print(f"   使用富集系数 Er = {Er}")
 
     # 创建有效数据掩膜
@@ -197,7 +197,7 @@ def calculate_soil_carbon_loss_gd(hwsd_gd_raster_path, hwsd_mdb_path,
     valid_loss = carbon_loss_raster[~np.isnan(carbon_loss_raster)]
     if len(valid_loss) > 0:
         print(f"\n{'=' * 50}")
-        print("广东省土壤有机碳流失量统计")
+        print("广东省土壤有机carbon量统计")
         print(f"{'=' * 50}")
         print(f"  有效像元数: {len(valid_loss):,}")
         print(f"  最小值: {np.min(valid_loss):.4f} t/(km²·a)")
@@ -222,16 +222,16 @@ def main():
 
     # ==================== 输入参数设置 ====================
     # 已投影和裁剪的广东省HWSD栅格数据（MU_GLOBAL）
-    hwsd_gd_raster_path = r"./data\中国土壤数据集\HWSD_RASTER\hwsd_GD.tif"
+    hwsd_raster_path = r"./data\soil\HWSD_RASTER\hwsd_region.tif"
 
     # HWSD属性数据库
-    hwsd_mdb_path = r"./data\中国土壤数据集\HWSD.mdb"
+    hwsd_mdb_path = r"./data\soil\HWSD.mdb"
 
     # RUSLE侵蚀模数栅格（单位：t/(km²·a)）
     erosion_raster_path = r"./data\RUSLE\erosion_modulus_GD.tif"
 
     # 输出路径
-    output_path = r"./data\碳流失\soil_carbon_loss_GD.tif"
+    output_path = r"./data\carbon\soil_carbon_loss_GD.tif"
 
     # 富集系数（可根据研究调整）
     ER_COEFFICIENT = 0.855
@@ -252,7 +252,7 @@ def main():
     try:
         # 执行计算
         result = calculate_soil_carbon_loss_gd(
-            hwsd_gd_raster_path=hwsd_gd_raster_path,
+            hwsd_raster_path=hwsd_raster_path,
             hwsd_mdb_path=hwsd_mdb_path,
             erosion_raster_path=erosion_raster_path,
             output_path=output_path,
@@ -260,7 +260,7 @@ def main():
         )
 
         print("\n" + "=" * 50)
-        print("✓ 土壤有机碳流失量计算完成！")
+        print("✓ 土壤有机carbon量计算完成！")
         print("=" * 50)
 
     except Exception as e:

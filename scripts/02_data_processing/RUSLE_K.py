@@ -11,7 +11,7 @@ def debug_silt_data():
     """
     调试粉粒数据，找出问题所在
     """
-    base_path = r"./data\中国土壤数据集\GEE_Soil"
+    base_path = r"./data\soil\GEE_Soil"
     silt_path = os.path.join(base_path, "GD_silt.tif")
 
     print("=== 粉粒数据调试信息 ===")
@@ -70,7 +70,7 @@ def calculate_rusle_k_local():
     基于本地TIFF文件计算RUSLE K值
     """
     # 数据路径
-    base_path = r"./data\中国土壤数据集\GEE_Soil"
+    base_path = r"./data\soil\GEE_Soil"
     sand_path = os.path.join(base_path, "GD_sand.tif")
     silt_path = os.path.join(base_path, "GD_silt.tif")
     clay_path = os.path.join(base_path, "GD_clay.tif")

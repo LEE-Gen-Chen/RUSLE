@@ -16,14 +16,14 @@ class RUSLECalculator:
     def __init__(self, target_resolution=30, target_crs="EPSG:4547", resolution_tolerance=0.005):
         self.target_resolution = target_resolution
         self.target_crs = target_crs
-        self.gd_boundary = None
+        self.boundary = None
         self.resolution_tolerance = resolution_tolerance
 
-    def load_gd_boundary(self, boundary_path):
+    def load_boundary(self, boundary_path):
         """加载广东省边界"""
         print("加载广东省边界...")
-        self.gd_boundary = gpd.read_file(boundary_path)
-        self.gd_boundary = self.gd_boundary.to_crs(self.target_crs)
+        self.boundary = gpd.read_file(boundary_path)
+        self.boundary = self.boundary.to_crs(self.target_crs)
         print(f"广东省边界加载完成，坐标系: {self.target_crs}")
 
     def is_resolution_within_tolerance(self, actual_resolution):
@@ -42,14 +42,14 @@ class RUSLECalculator:
             resolution_match = self.is_resolution_within_tolerance(src.res[0])
 
             # 检查范围是否在广东省边界内（简单检查）
-            if self.gd_boundary is not None:
+            if self.boundary is not None:
                 src_bounds = src.bounds
-                gd_bounds = self.gd_boundary.total_bounds
+                bounds = self.boundary.total_bounds
                 # 如果源数据范围小于或等于广东边界范围，认为可能已经裁剪过
-                bounds_check = (src_bounds.left >= gd_bounds[0] and
-                                src_bounds.right <= gd_bounds[2] and
-                                src_bounds.top <= gd_bounds[3] and
-                                src_bounds.bottom >= gd_bounds[1])
+                bounds_check = (src_bounds.left >= bounds[0] and
+                                src_bounds.right <= bounds[2] and
+                                src_bounds.top <= bounds[3] and
+                                src_bounds.bottom >= bounds[1])
             else:
                 bounds_check = False
 
@@ -111,9 +111,9 @@ class RUSLECalculator:
                 print(f"  无需处理，已符合目标坐标系和分辨率")
                 return input_path
 
-    def clip_to_gd(self, input_path, output_path=None):
+    def clip_to_study_area(self, input_path, output_path=None):
         """将栅格数据裁剪到广东省范围内，如果需要的话"""
-        if self.gd_boundary is None:
+        if self.boundary is None:
             raise ValueError("请先加载广东省边界")
 
         print(f"检查栅格数据: {os.path.basename(input_path)}")
@@ -126,13 +126,13 @@ class RUSLECalculator:
 
         with rasterio.open(input_path) as src:
             # 确保坐标系一致
-            if src.crs != self.gd_boundary.crs:
-                raise ValueError(f"栅格数据坐标系 {src.crs} 与边界坐标系 {self.gd_boundary.crs} 不一致")
+            if src.crs != self.boundary.crs:
+                raise ValueError(f"栅格数据坐标系 {src.crs} 与边界坐标系 {self.boundary.crs} 不一致")
 
             try:
                 print(f"  执行裁剪...")
                 # 执行裁剪
-                out_image, out_transform = mask.mask(src, self.gd_boundary.geometry,
+                out_image, out_transform = mask.mask(src, self.boundary.geometry,
                                                      crop=True, all_touched=True)
                 out_meta = src.meta.copy()
 
@@ -413,7 +413,7 @@ class RUSLECalculator:
         unified_path = self.unify_raster(input_path)
 
         # 裁剪到广东省范围（如果需要）
-        final_path = self.clip_to_gd(unified_path, output_path)
+        final_path = self.clip_to_study_area(unified_path, output_path)
         return final_path
 
 
@@ -423,13 +423,13 @@ def main():
 
     # 文件路径配置
     base_path = r"./data"
-    boundary_path = os.path.join(base_path, "Geoscene", "GD.shp")
+    boundary_path = os.path.join(base_path, "./data", "GD.shp")
 
     # 因子路径模板
     R_template = os.path.join(base_path, "Precipitation", "R_output", "R_{year}.tif")
     C_template = os.path.join(base_path, "NDVI", "C_value_30m", "C_NDVI_{year}.tif")
-    K_path = os.path.join(base_path, "中国土壤数据集", "HWSD_Resample", "RUSLE_K_30m.tif")
-    LS_path = os.path.join(base_path, "Geoscene", "LS_Factor.tif")
+    K_path = os.path.join(base_path, "soil", "HWSD_Resample", "RUSLE_K_30m.tif")
+    LS_path = os.path.join(base_path, "./data", "LS_Factor.tif")
     P_template = os.path.join(base_path, "CLCD", "P_factor", "P{year}.tif")
 
     # 输出目录
@@ -437,7 +437,7 @@ def main():
     os.makedirs(output_dir, exist_ok=True)
 
     # 1. 加载广东省边界
-    calculator.load_gd_boundary(boundary_path)
+    calculator.load_boundary(boundary_path)
 
     # 2. 预处理静态因子（K和LS因子）
     print("\n" + "=" * 50)

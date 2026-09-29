@@ -4,7 +4,7 @@ import ee
 ee.Initialize(project='YOUR_PROJECT_ID')
 
 # 研究区：广东省市级边界
-guangdong = ee.FeatureCollection("projects/YOUR_PROJECT_ID/assets/GD_City")
+study_area = ee.FeatureCollection("projects/YOUR_PROJECT_ID/assets/GD_City")
 
 # 土壤数据集
 soil_datasets = {
@@ -19,11 +19,11 @@ soil_datasets = {
 # 循环创建导出任务
 for key, img in soil_datasets.items():
     task = ee.batch.Export.image.toDrive(
-        image=img.clip(guangdong),
+        image=img.clip(study_area),
         description=f"GD_{key}_soil",
         folder="GEE_SoilData",   # Google Drive 中的文件夹名（可自定义）
         fileNamePrefix=f"GD_{key}",
-        region=guangdong.geometry(),
+        region=study_area.geometry(),
         scale=250,               # 默认分辨率
         crs="EPSG:4490",         # 中国大地2000
         fileFormat="GeoTIFF",

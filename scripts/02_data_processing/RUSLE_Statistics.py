@@ -44,7 +44,7 @@ except Exception:
 print(f"PyTorch available: {TORCH_AVAILABLE}, device = {DEVICE}\n")
 
 # ============================= 配置 =============================
-base_path = r"./data\土壤侵蚀模数"
+base_path = r"./data\erosion"
 vector_path = r"./data\Geoscene\GD.shp"
 
 # CGCS2000 3-degree Gauss-Kruger CM 114E (EPSG:4547)

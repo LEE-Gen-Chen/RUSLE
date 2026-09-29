@@ -5,7 +5,7 @@ import os
 
 def process_soil_erosion_data():
     """
-    处理1990-2024年土壤侵蚀模数数据，按地市切分保存
+    处理1990-2024年erosion数据，按地市切分保存
     """
     # 设置数据路径
     data_path = r"./data\RUSLE"
@@ -16,7 +16,7 @@ def process_soil_erosion_data():
 
     # 遍历1990-2024年的数据文件
     for year in range(1990, 2025):
-        filename = f"Avg_土壤侵蚀模数{year}.xls"
+        filename = f"Avg_erosion{year}.xls"
         file_path = os.path.join(data_path, filename)
 
         if os.path.exists(file_path):
@@ -50,7 +50,7 @@ def process_soil_erosion_data():
         os.makedirs(output_base_path)
 
     # 保存总的合并数据
-    output_csv = os.path.join(output_base_path, "1990-2024_土壤侵蚀模数_合并数据.csv")
+    output_csv = os.path.join(output_base_path, "1990-2024_erosion_合并数据.csv")
     combined_data.to_csv(output_csv, index=False, encoding='utf-8-sig')
     print(f"合并数据已保存为: {output_csv}")
 
@@ -89,7 +89,7 @@ def split_data_by_city(data, output_base_path):
         final_city_data = pd.concat([city_data, stats_df], ignore_index=True)
 
         # 生成文件名
-        filename = f"{city}土壤侵蚀模数.csv"
+        filename = f"{city}erosion.csv"
         file_path = os.path.join(output_dir, filename)
 
         # 保存文件
@@ -191,7 +191,7 @@ def analyze_data_summary(data):
     简单的数据汇总分析（仅输出到控制台）
     """
     print("=" * 50)
-    print("土壤侵蚀模数数据汇总分析")
+    print("erosion数据汇总分析")
     print("=" * 50)
 
     # 基本统计信息
@@ -227,7 +227,7 @@ if __name__ == "__main__":
         print("\n✅ 所有数据处理完成！")
         print("生成的文件路径: H:\\毕业论文\\RUSLE\\土壤侵蚀分析")
         print("生成的文件:")
-        print("  - 1990-2024_土壤侵蚀模数_合并数据.csv (总合并数据)")
+        print("  - 1990-2024_erosion_合并数据.csv (总合并数据)")
         print("  - 地市土壤侵蚀数据/ (目录，包含各地市的独立CSV文件)")
         print("  - 每个地市文件包含原始数据和统计信息")
     else:

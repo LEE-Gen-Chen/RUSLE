@@ -34,8 +34,8 @@ subfolders = {
     'LS': Path(base_path) / 'LS',
     'P': Path(base_path) / 'P',
     'R': Path(base_path) / 'R',
-    'SOC': Path(base_path) / '土壤有机碳流失量',
-    'erosion': Path(base_path) / '土壤侵蚀模数'
+    'SOC': Path(base_path) / '土壤有机carbon量',
+    'erosion': Path(base_path) / 'erosion'
 }
 
 # ================== 广东省边界 ==================

@@ -12,7 +12,7 @@ import time
 ee.Initialize(project='YOUR_PROJECT_ID')
 
 # 研究区（广东）
-guangdong = ee.FeatureCollection("projects/YOUR_PROJECT_ID/assets/GD")
+study_area = ee.FeatureCollection("projects/YOUR_PROJECT_ID/assets/GD")
 
 # 数据集：ERA5-Land 日总降水量（单位 m）
 dataset = ee.ImageCollection("ECMWF/ERA5_LAND/DAILY_AGGR") \
@@ -39,7 +39,7 @@ def download_day(date_str, retries=3):
                 return f"⚠️ 无数据：{date_str}"
 
             # 转换单位（m → mm）
-            img_mm = img.multiply(1000).rename('precipitation_mm').clip(guangdong)
+            img_mm = img.multiply(1000).rename('precipitation_mm').clip(study_area)
 
             # 文件名与路径
             file_name = f"ERA5_Precipitation_Daily_{date_str}.tif"
@@ -51,7 +51,7 @@ def download_day(date_str, retries=3):
 
             # 生成下载链接
             url = img_mm.getDownloadURL({
-                'region': guangdong.geometry(),
+                'region': study_area.geometry(),
                 'scale': scale,
                 'crs': 'EPSG:4326',
                 'format': 'GEO_TIFF'
