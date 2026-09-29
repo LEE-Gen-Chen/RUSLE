@@ -1,0 +1,182 @@
+# ============================
+# Python
+# ============================
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+dist/
+build/
+*.egg
+
+# Virtual environment
+.venv/
+venv/
+ENV/
+env/
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb_checkpoints
+
+# ============================
+# IDE
+# ============================
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# ============================
+# 数据文件（不上传）
+# ============================
+
+# GEE 下载的栅格数据
+*.tif
+*.tiff
+*.img
+*.hdr
+
+# CSV / Excel
+*.csv
+*.xlsx
+*.xls
+
+# Shp / GeoJSON / KML
+*.shp
+*.shx
+*.dbf
+*.prj
+*.cpg
+*.qpj
+*.sbn
+*.sbx
+*.cpg
+*.geojson
+*.kml
+*.kmz
+
+# NumPy / pickle
+*.npy
+*.npz
+*.pkl
+*.pickle
+*.joblib
+
+# 模型文件
+*.pt
+*.pth
+*.ckpt
+*.h5
+*.onnx
+
+# 模型输出
+model_*.pkl
+*_model.pkl
+*.pkl
+
+# ============================
+# 论文与文档（版权/隐私）
+# ============================
+*.doc
+*.docx
+*.pdf
+
+# 查重/AIGC报告
+*查重*
+*AIGC*
+*大雅*
+*维普*
+*知网*
+
+# 批注版
+*批注*
+*修改版*
+*终稿*
+*初稿*
+*定稿*
+
+# 简历/实习
+*实习*
+*简历*
+
+# ============================
+# 图片与媒体
+# ============================
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.bmp
+*.svg
+*.webp
+
+# 排除不必要的图片
+# （保留 figures/ 目录的图：取消下面注释即可）
+# !figures/*.png
+# !figures/*.jpg
+
+# ============================
+# 软件安装包
+# ============================
+*.exe
+*.msi
+*.dmg
+*.deb
+*.rpm
+*.zip
+*.rar
+*.7z
+
+# ============================
+# 配置与密钥（不上传）
+# ============================
+*.yaml
+*.yml
+*.toml
+*.ini
+*.env
+.env
+.env.local
+
+# GEE 认证文件
+~/.config/earthengine/
+gee_credentials.json
+
+# GitHub token
+GH_TOKEN
+.github_token
+
+# ============================
+# 下载日志
+# ============================
+*download_log*
+*.log
+
+# ============================
+# 本地结果目录
+# ============================
+Result/
+result/
+results/
+output/
+Output/
+
+# 临时文件
+*.tmp
+*.temp
+*~
+.DS_Store
+Thumbs.db
+
+# ============================
+# 敏感数据目录
+# ============================
+H:\
+D:\
+C:\
+data/
+# 如需上传 data/ 目录，取消上面注释并删除此行
